@@ -85,9 +85,9 @@ function main()
                     eliminarPasajero($$codigo);
                 } else {
                     time_nanosleep(0, 300000000);
-                    echo "\n\t◢ =================◣\n";
+                    echo "\n\t◢ ==================◣\n";
                     echo "\t‖No existe el viaje‖\n";
-                    echo "\t◥ =================◤\n\n";
+                    echo "\t◥ ================◤\n\n";
                     time_nanosleep(0, 500000000);
                 }
 

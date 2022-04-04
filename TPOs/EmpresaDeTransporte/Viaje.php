@@ -122,9 +122,9 @@ class Viaje
     public function __toString()
     {
         return "\n◢=====================================◣\n" .
-            "|Destino: {$this->getDestino()}\t\t\t|\n" .
-            "|Codigo: {$this->getCodigo()}\t\t\t|\n" .
-            "|Cantidad maxima de pasajeros: {$this->getCantMaxPasajeros()}\t|\n" .
+            "|Destino: {$this->getDestino()}\t\t\t\n" .
+            "|Codigo: {$this->getCodigo()}\t\t\t\n" .
+            "|Cantidad maxima de pasajeros: {$this->getCantMaxPasajeros()}\t\n" .
             "◥======================================◤\n" .
             "Pasajeros: {$this->getStringPasajeros()}\n";
     }
