@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.postimg.cc/Nf4Tfs6N/IPOO.png)](https://postimg.cc/svM1TR0S" />
+  <img src="https://i.postimg.cc/Nf4Tfs6N/IPOO.png" />
 </p>
 
 ## Cursada 2022
