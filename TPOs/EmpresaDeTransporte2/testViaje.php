@@ -23,9 +23,10 @@ function menu()
         "¦==============================¦\n" .
         "| 1. Crear un viaje            |\n" .
         "| 2. Agregar pasajero          |\n" .
-        "| 3. Eliminar pasajero         |\n" .
-        "| 4. Mostrar datos del viaje   |\n" .
-        "| 5. Salir                     |\n" .
+        "| 3. Editar datos de pasajero  |\n" .
+        "| 4. Eliminar pasajero         |\n" .
+        "| 5. Mostrar datos del viaje   |\n" .
+        "| 6. Salir                     |\n" .
         "+==============================+\n\n";
 }
 
@@ -67,6 +68,39 @@ function destinoExiste($destinosAlmacenados, $codViaje)
 }
 
 /**
+ * Modifica los datos de un pasajero especifico
+ * @param object $viaje
+ */
+function modificarPasajero($viaje)
+{
+    $pasajeros = $viaje->getPasajeros();
+
+    $indice = 1; // Para mostrar el indice de los pasajeros
+    foreach ($pasajeros as $pasajero) {
+        echo $indice . ". " . $pasajero->getNombre() .
+            " " . $pasajero->getApellido() .
+            " " . $pasajero->getDni() .
+            " " . $pasajero->getTelefono() . "\n";
+        $indice++;
+    }
+
+    // Ingresar el indice del pasajero en la lista.
+    $indice = readline("Ingrese el numero del pasajero a modificar: ");
+
+    $nombre = readline("Ingrese el nuevo nombre: ");
+    $apellido = readline("Ingrese el nuevo apellido: ");
+    $dni = readline("Ingrese el nuevo DNI: ");
+    $telefono = readline("Ingrese el nuevo telefono: ");
+
+    $pasajeros[$indice - 1] = new Pasajero($nombre, $apellido, $dni, $telefono);
+
+    $viaje->setPasajeros($pasajeros);
+    echo "+==============================+\n";
+    echo "|Se a modificado el pasajero.  |\n";
+    echo "+==============================+\n\n";
+}
+
+/**
  * Metodo main.
  * Muestra el menu y ejecuta las funciones correspondientes.
  */
@@ -77,7 +111,7 @@ function main()
     $pedro = new Pasajero("Pedro",  "Gomez",     "87654321",    "2995438721");
     $jose = new Pasajero("Jose",    "Gonzalez",  "98765432",    "2996548732");
     $maria = new Pasajero("Maria",  "Lopez",     "54321678",    "2995168778");
-    $martin = new Pasajero("Martin","Gomez",     "87675321",    "2995438721");
+    $martin = new Pasajero("Martin", "Gomez",     "87675321",    "2995438721");
     $toto = new Pasajero("Toto",    "Gomez",     "87234321",    "2995438721");
     $aaron = new Pasajero("Aaron",  "Acosta",    "41837661",    "2995438721");
     $santi = new Pasajero("Santi",  "Yaitul",    "43130803",    "2995438721");
@@ -118,7 +152,7 @@ function main()
             $indice++;
         } while ($viaje->hayCapacidad());
     }
-    
+
     $destinosAlmacenados = $viajes;
 
     // Menu principal.
@@ -162,12 +196,20 @@ function main()
             case 3:
                 $codViaje = readline("Ingrese el codigo del viaje: ");
                 if (destinoExiste($destinosAlmacenados, $codViaje)) {
+                    modificarPasajero($$codViaje);
+                } else {
+                    echo "\nNo existe el viaje de codigo " . $codViaje . ".\n";
+                }
+                break;
+            case 4:
+                $codViaje = readline("Ingrese el codigo del viaje: ");
+                if (destinoExiste($destinosAlmacenados, $codViaje)) {
                     eliminarPasajero($$codViaje);
                 } else {
                     echo "\nNo existe el viaje de codigo " . $codViaje . ".\n";
                 };
                 break;
-            case 4:
+            case 5:
                 $codViaje = readline("Ingrese el codigo del viaje: ");
                 if (destinoExiste($destinosAlmacenados, $codViaje)) {
                     verDatos($$codViaje);
@@ -175,7 +217,7 @@ function main()
                     echo "\nNo existe el viaje de codigo " . $codViaje . ".\n";
                 };
                 break;
-            case 5:
+            case 6:
                 time_nanosleep(0, 300000000);
                 echo "\n\t◢ ========================◣\n";
                 echo "\t‖     Saliendo...         ‖\n";
@@ -185,7 +227,7 @@ function main()
             default:
                 echo "Opcion invalida\n";
         }
-    } while ($opcion != 5);
+    } while ($opcion != 6);
 
     echo "Destruyendo intancias...\n";
 }

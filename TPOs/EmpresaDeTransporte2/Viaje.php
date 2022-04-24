@@ -83,7 +83,7 @@ class Viaje
     private function getStringPasajeros()
     {
         if (count($this->pasajeros) > 0) {
-            $stringPasajeros = "Pasajeros: \nNombre Apellido DNI\n";
+            $stringPasajeros = "Pasajeros: \nNombre Apellido DNI Telefono\n";
             foreach ($this->pasajeros as $pasajero) {
                 $stringPasajeros = $stringPasajeros . $pasajero->getNombre() . 
                 " " . $pasajero->getApellido() . " " . $pasajero->getDni() . 
