@@ -194,7 +194,7 @@ class Viaje
     // Funciones magicas
     public function __toString()
     {
-        return "\nResponsable\n" . $this->getResposable() .
+        return "\nResponsable\n" . $this->getResponsable() .
             "\nDestino: " . $this->getDestino() .
             "\nCodigo: " . $this->getCodigo() .
             "\nCantidad maxima de pasajeros: " . $this->getCantMaxPasajeros() .
