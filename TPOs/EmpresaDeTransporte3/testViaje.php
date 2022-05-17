@@ -11,6 +11,8 @@ De la misma forma cargue la información del responsable del viaje. */
 include "Pasajero.php";
 include "Viaje.php";
 include "ResponsableV.php";
+include "Terrestre.php";
+include "Aereo.php";
 
 /**
  * Metodo menu que muestra por pantalla las opciones del programa.
@@ -134,10 +136,10 @@ function main()
     $rSanti = new ResponsableV("Santi", "Yaitul", "69", "2995438721");
     $rAlan = new ResponsableV("Alan", "Vera", "420", "2995438721");
 
-    $Cor = new Viaje("Cordoba", "Cor", "4", $rJuan);
-    $Tuc = new Viaje("Tucuman", "Tuc", "6", $rAaron);
-    $BsAs = new Viaje("BuenosAires", "BsAs", "3", $rSanti);
-    $Ros = new Viaje("Rosario", "Ros", "7", $rAlan);
+    $Cor = new Aereo("Cordoba", "Cor", "4", $rJuan, "20000", "IV", "666", "latam", "1");
+    $Tuc = new Terrestre("Tucuman", "Tuc", "6", $rAaron, "2400", "I");
+    $BsAs = new Aereo("BuenosAires", "BsAs", "3", $rSanti, "25000", "V", "875", "nort", "2");
+    $Ros = new Terrestre("Rosario", "Ros", "7", $rAlan, "2000", "IV");
 
     $viajes = array();
     array_push($viajes, $Cor);
@@ -150,7 +152,7 @@ function main()
         do {
             $viaje->agregarPasajero($pasajeros[$indice]);
             $indice++;
-        } while ($viaje->hayCapacidad());
+        } while ($viaje->hayPasajesDisponible());
     }
 
     $destinosAlmacenados = $viajes;
@@ -165,30 +167,54 @@ function main()
                 $destino = readline("Ingrese el destino: ");
                 $codViaje = readline("Ingrese el codigo del viaje: ");
                 $cantMaxPasajeros = readline("Ingrese la cantidad maxima de pasajeros: ");
+                $importe = readline("Ingrese el importe: ");
+                //IV = Ida y Vuelta, I = Ida, V = Vuelta
+                $tipoAsiento = readline("Ingrese si el viaje es IV, I, V: ");
                 echo "+===============================\n\n";
                 $nombre = readline("Ingrese el nombre del responsable: ");
                 $apellido = readline("Ingrese el apellido del responsable: ");
                 $numeroEmpleado = readline("Ingrese el numero de empleado: ");
                 $numeroLicencia = readline("Ingrese el numero de licencia: ");
                 $responsableViaje = new responsableV($nombre, $apellido, $numeroEmpleado, $numeroLicencia);
-                $$codViaje = new Viaje($destino, $codViaje, $cantMaxPasajeros, $responsableViaje);
-                array_push($destinosAlmacenados, $$codViaje);
+                echo "+===============================\n\n";
+                $tipoViaje = readline("Su viaje es Aereo o Terrestre: (A/T): ");
+                if (strtoupper($tipoViaje) == "A") {
+                    $codigoVuelo = readline("Ingrese el codigo del vuelo: ");
+                    $nomAereolinea = readline("Ingrese el nombre de la aerolinea: ");
+                    $escala = readline("Ingrese la cantidad de escalas: ");
+                    $$codViaje = new Aereo($destino, $codViaje, $cantMaxPasajeros, $responsableViaje, $importe, $tipoAsiento, $codigoVuelo, $nomAereolinea, $escala);
+                    array_push($destinosAlmacenados, $$codViaje);
+                } else if (strtoupper($tipoViaje) == "T") {
+                    $$codViaje = new Terrestre($destino, $codViaje, $cantMaxPasajeros, $responsableViaje, $importe, $tipoAsiento);
+                    array_push($destinosAlmacenados, $$codViaje);
+                } else {
+                    echo "Tipo de viaje invalido.\n";
+                }
                 break;
             case 2:
                 $codViaje = readline("Ingrese el codigo del viaje: ");
                 if (destinoExiste($destinosAlmacenados, $codViaje)) {
-                    if ($$codViaje->hayCapacidad()) {
+                    if ($$codViaje->hayPasajesDisponible()) {
                         echo "\n+===============================\n";
                         $nombre = readline("Ingrese el nombre del pasajero: ");
                         $apellido = readline("Ingrese el apellido del pasajero: ");
                         $dni = readline("Ingrese el dni del pasajero: ");
                         $telefono = readline("Ingrese el telefono del pasajero: ");
                         echo "+===============================\n\n";
-
-                        $$codViaje->agregarPasajero(new Pasajero($nombre, $apellido, $dni, $telefono));
+                        if (get_class($$codViaje) == "A") {
+                            //Primera Clase = P y Estandar = E
+                            $Asiento = readline("Ingrese el tipo de asiento(P/E):");
+                            echo "El precio es de: " / $$codViaje->venderPasaje(new Pasajero($nombre, $apellido, $dni, $telefono), $Asiento);
+                        } else if (get_class($$codViaje) == "T") {
+                            //Cama = C y Semi-Cama = SC
+                            $Asiento = readline("Ingrese el tipo de asiento(C/SC):");
+                            echo "El precio es de: " / $$codViaje->venderPasaje(new Pasajero($nombre, $apellido, $dni, $telefono), $Asiento);
+                        } else {
+                            echo "Tipo de viaje invalido.\n";
+                        }
                     } else {
                         echo "Excede el limite de pasajeros.\n";
-                    };
+                    }
                 } else {
                     echo "\nNo existe el viaje de codigo " . $codViaje . ".\n";
                 }

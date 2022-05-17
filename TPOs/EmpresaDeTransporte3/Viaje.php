@@ -4,8 +4,12 @@ class Viaje
     private $destino;
     private $codigo;
     private $cantMaxPasajeros;
-    private $pasajeros;
     private $responsable;
+    private $importe;
+    private $tipoAsiento;
+    private $pasajeros;
+    private $tipoViaje;
+
 
     /**
      * Constructor
@@ -14,42 +18,24 @@ class Viaje
      * @param int $cantMaxPasajeros
      * @param object $responsable
      */
-    public function __construct($destino, $codigo, $cantMaxPasajeros, $responsable)
+    public function __construct($destino, $codigo, $cantMaxPasajeros, $responsable, $importe, $tipoAsiento)
     {
         $this->destino = $destino;
         $this->codigo = $codigo;
         $this->cantMaxPasajeros = $cantMaxPasajeros;
         $this->pasajeros = array();
         $this->responsable = $responsable;
+        $this->importe = $importe;
+        $this->tipoAsiento = $tipoAsiento;
+        //IV = Ida y Vuelta
+        if ($tipoAsiento ==  "IV") {
+            $this->importe = $importe * 1.5;
+        } else {
+            $this->importe = $importe;
+        }
     }
 
-    // Setter
-    public function setDestino($destino)
-    {
-        $this->destino = $destino;
-    }
-
-    public function setCodigo($codigo)
-    {
-        $this->codigo = $codigo;
-    }
-
-    public function setCantMaxPasajeros($cantMaxPasajeros)
-    {
-        $this->cantMaxPasajeros = $cantMaxPasajeros;
-    }
-
-    public function setPasajeros($pasajero)
-    {
-        $this->pasajeros = $pasajero;
-    }
-
-    public function setResponsable($responsable)
-    {
-        $this->responsable = $responsable;
-    }
-
-    // Getter
+    //Getters
     public function getDestino()
     {
         return $this->destino;
@@ -65,14 +51,71 @@ class Viaje
         return $this->cantMaxPasajeros;
     }
 
-    public function getResposable()
+    public function getPasajeros()
+    {
+        return $this->pasajeros;
+    }
+
+    public function getResponsable()
     {
         return $this->responsable;
     }
 
-    public function getPasajeros()
+    public function getTipoViaje()
     {
-        return $this->pasajeros;
+        return $this->tipoViaje;
+    }
+
+
+    public function getTipoAsiento()
+    {
+        return $this->tipoAsiento;
+    }
+
+    public function getImporte()
+    {
+        return $this->importe;
+    }
+
+    //Setters
+    public function setDestino($destino)
+    {
+        $this->destino = $destino;
+    }
+
+    public function setCodigo($codigo)
+    {
+        $this->codigo = $codigo;
+    }
+
+    public function setCantMaxPasajeros($cantMaxPasajeros)
+    {
+        $this->cantMaxPasajeros = $cantMaxPasajeros;
+    }
+
+    public function setPasajeros($pasajeros)
+    {
+        $this->pasajeros = $pasajeros;
+    }
+
+    public function setResponsable($responsable)
+    {
+        $this->responsable = $responsable;
+    }
+
+    public function setTipoViaje($tipoViaje)
+    {
+        $this->tipoViaje = $tipoViaje;
+    }
+
+    public function setTipoAsiento($tipoAsiento)
+    {
+        $this->tipoAsiento = $tipoAsiento;
+    }
+
+    public function setImporte($importe)
+    {
+        $this->importe = $importe;
     }
 
     // Métodos
@@ -85,9 +128,9 @@ class Viaje
         if (count($this->pasajeros) > 0) {
             $stringPasajeros = "Pasajeros: \nNombre Apellido DNI Telefono\n";
             foreach ($this->pasajeros as $pasajero) {
-                $stringPasajeros = $stringPasajeros . $pasajero->getNombre() . 
-                " " . $pasajero->getApellido() . " " . $pasajero->getDni() . 
-                " " . $pasajero->getTelefono() . "\n";
+                $stringPasajeros = $stringPasajeros . $pasajero->getNombre() .
+                    " " . $pasajero->getApellido() . " " . $pasajero->getDni() .
+                    " " . $pasajero->getTelefono() . "\n";
             }
         } else {
             $stringPasajeros = "No hay pasajeros en el viaje";
@@ -98,7 +141,7 @@ class Viaje
     /**
      * Metodo que devuelve si hay capacidad para agregar un pasajero a la instancia actual de Viaje.
      */
-    public function hayCapacidad()
+    public function hayPasajesDisponible()
     {
         return count($this->pasajeros) < $this->cantMaxPasajeros;
     }
@@ -147,16 +190,15 @@ class Viaje
         }
     }
 
+
     // Funciones magicas
     public function __toString()
     {
-        return "\n+=======================================+" .
-            "\nResponsable\n" . $this->getResposable() . 
+        return "\nResponsable\n" . $this->getResposable() .
             "\nDestino: " . $this->getDestino() .
             "\nCodigo: " . $this->getCodigo() .
             "\nCantidad maxima de pasajeros: " . $this->getCantMaxPasajeros() .
-            "\n" . $this->getStringPasajeros() .
-            "\n+=======================================+\n";
+            "\n" . $this->getStringPasajeros();
     }
 
     public function __destruct()
