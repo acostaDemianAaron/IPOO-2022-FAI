@@ -12,24 +12,24 @@ function menu()
         "----------------------------------\n" .
         "               MENU               \n" .
         "----------------------------------\n" .
-        "  1. Agregar una empresa          \n" .
-        "  2  Agregar un viaje             \n" .
-        "  3. Agregar responsable          \n" .
+        "  1. Agregar empresa              \n" .
+        "  2. Agregar responsable          \n" .
+        "  3. Agregar viaje                \n" .
         "  4. Agregar pasajero             \n" .
         "----------------------------------\n" .
-        "  5. Modificar una empresa        \n" .
-        "  6. Modificar un viaje           \n" .
-        "  7. Modificar responsable        \n" .
+        "  5. Modificar empresa            \n" .
+        "  6. Modificar responsable        \n" .
+        "  7. Modificar viaje              \n" .
         "  8. Modificar pasajero           \n" .
         "----------------------------------\n" .
-        "  9.  Eliminar una empresa        \n" .
-        "  10. Eliminar un viaje           \n" .
-        "  11. Eliminar un responsable     \n" .
-        "  12. Eliminar un pasajero        \n" .
+        "  9.  Eliminar empresa            \n" .
+        "  10. Eliminar responsable        \n" .
+        "  11. Eliminar viaje              \n" .
+        "  12. Eliminar pasajero           \n" .
         "----------------------------------\n" .
         "  13. Ver empresas                \n" .
-        "  14. Ver viajes                  \n" .
-        "  15. Ver responsables            \n" .
+        "  14. Ver responsables            \n" .
+        "  15. Ver viajes                  \n" .
         "  16. Ver pasajeros               \n" .
         "----------------------------------\n" .
         "  0. Salir                        \n" .
@@ -628,6 +628,3 @@ $res = true;
 while ($res) {
     $res = opcionesMenu();
 }
-echo "--------------------" .
-    "\n\tSaliendo...\n" .
-    "--------------------";

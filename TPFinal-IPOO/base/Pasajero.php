@@ -41,7 +41,7 @@ class pasajero
     {
         return $this->ptelefono;
     }
-
+    //Obtengo el objeto viaje
     public function getIdViaje()
     {
         return $this->idviaje;
