@@ -186,7 +186,6 @@ class ResponsableV
             "', rapellido = '" . $this->getRapellido() .
             "', rnumerolicencia = '" . $this->getRlicencia() .
             "' WHERE rnumeroempleado = " . $this->getRnumeroEmpleado();
-
         if ($baseD->conectar()) {
             if ($baseD->ejecutarConsulta($consulModificar)) {
                 $resultado =  true;

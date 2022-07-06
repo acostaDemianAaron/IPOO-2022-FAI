@@ -72,7 +72,7 @@ function empresaModificar()
     $id = readline("Ingrese el id de la empresa:");
     $resultado = $empresa->buscarDatos($id);
     if ($resultado) {
-        echo "Datos Modificados\n";
+        echo "Datos Nuevos\n";
         $nombre = readline("Nombre de la empresa: ");
         $direccion = readline("Direccion de la empresa: ");
         $empresa->setEnombre($nombre);
@@ -99,7 +99,7 @@ function empresaEliminar()
     $resultado = $empresa->buscarDatos($id);
     if ($resultado) {
         if ($viaje->buscarDatos(null, "idempresa = " . $id)) {
-            $eliminarEmpresa = readline("Quiere eliminar el viaje junto a la empresa? (si/no) ");
+            $eliminarEmpresa = readline("Esta empresa tiene un viaje. Quiere eliminar el viaje? (si/no) ");
             if ($eliminarEmpresa == "si") {
                 $viaje->eliminarDatos();
                 $empresaE = false;
@@ -119,7 +119,7 @@ function empresaEliminar()
                 echo "\nNo se pudo eliminar la empresa.\n";
             }
         } else {
-            echo "\nNo se puede eliminar un responsable a cargo de un viaje sin eliminar el viaje.\n";
+            echo "\nNo se puede eliminar esta empresa tiene datos a cargo\n";
         }
     } else {
         echo "No se pudo encontrar la empresa con id = " . $id . ".\n";
@@ -146,10 +146,10 @@ function empresaMostrar()
             if ($respuesta) {
                 echo $empresa;
             } else {
-                echo "No se pudo encontrar la empresa.";
+                echo "No se a encontrar la empresa.";
             }
         } else {
-            echo "ID ingresado no es valido.\n";
+            echo "El id ingresado no existe.\n";
         }
     }
 }
@@ -191,13 +191,13 @@ function viajeIngresar()
                     echo $viaje->getMensajeDeOperacion();
                 }
             } else {
-                echo "\nNo existe la empresa o responsable a cargo.\n";
+                echo "\nNo existe la empresa a cargo.\n";
             }
         } else {
             echo "\nExiste un viaje al destino.\n";
         }
     } else {
-        echo "\nYa existe un viaje con ese ID.\n";
+        echo "\nYa existe un viaje con ese id.\n";
     }
 }
 
@@ -234,10 +234,10 @@ function viajeModificar()
                     echo "\n\t   El viaje fue modificado correctamente a la Base de Datos\n" .
                         "\t-------------------------------------------------------------\n";
                 } else {
-                    echo "\nNo se pudo crear el nuevo viaje.\n";
+                    echo "\nNo se pudo modificar el viaje\n";
                 }
             } else {
-                echo "\nNo existe la empresa o responsable.\n";
+                echo "\nLos datos del responsable o la empresa estan mal.\n";
             }
         } else {
             echo "\nExiste un viaje al destino.\n";
@@ -248,21 +248,34 @@ function viajeModificar()
 }
 
 //Eliminar Viaje
-function viajeEliminar()
-{
+function viajeEliminar(){
     $viaje = new Viaje();
+    $pasajero = new Pasajero();
+    $pasajeroE = false;
 
     $id = readline("Ingrese el id del viaje a eliminar: ");
     $resultado = $viaje->buscarDatos($id, null);
-
     if ($resultado) {
-        $resultado = $viaje->eliminarDatos();
-        if ($resultado) {
-            echo "\t------------------------------------------------------------\n";
-            echo "\n\t   El viaje fue eliminado correctamente a la Base de Datos\n" .
-                "\t-------------------------------------------------------------\n";
+        if ($pasajero->buscarDatos(null, "idviaje = " . $id)) {
+            $eliminarViaje = readline("El viaje tiene pasajeros. Quiere eliminar el viaje? (si/no) ");
+            if ($eliminarViaje == "si") {
+                $pasajeroE = false;
+            } else {
+                $pasajeroE = true;
+            }
+        }
+
+        if (!$pasajeroE) {
+            $resultado = $viaje->eliminarDatos();
+            if ($resultado) {
+                echo "\t------------------------------------------------------------\n";
+                echo "\n\t   El viaje fue eliminado correctamente a la Base de Datos\n" .
+                    "\t-------------------------------------------------------------\n";
+            } else {
+                echo "\nNo se pudo eliminar el viaje.\n";
+            }
         } else {
-            echo "\nNo se pudo eliminar el viaje.\n";
+            echo "\nNo se puede eliminar el viaje. Sin borrar a los pasajeros antes\n";
         }
     } else {
         echo "No se pudo encontrar el viaje con id = " . $id . ".\n";
@@ -287,10 +300,10 @@ function viajeMostrar()
             if ($respuesta) {
                 echo $viaje;
             } else {
-                echo "No se pudo encontrar el viaje.";
+                echo "El viaje no exite.";
             }
         } else {
-            echo "ID ingresado no es valido.\n";
+            echo "El id no existe\n";
         }
     }
 }
@@ -323,7 +336,7 @@ function responsableIngresar()
             echo $responsable->getMensajeDeOperacion();
         }
     } else {
-        echo "\nYa existe un responsable con ese ID.\n";
+        echo "\nYa existe un responsable con ese id.\n";
     }
 }
 
@@ -347,7 +360,7 @@ function responsableModificar()
             echo "\n\t   El responsable fue modificada correctamente a la Base de Datos.\n" .
                 "\t---------------------------------------------------------------------\n";
         } else {
-            echo "\nNo se pudo modificar el responsable.\n";
+            echo "\nNo se pudo modificar.\n";
         }
     } else {
         echo "No se pudo encontrar el responsable con numero de empleado: " . $rnumeroEmpleado . "\n";
@@ -365,7 +378,7 @@ function responsableEliminar()
 
     if ($resultado) {
         if ($viaje->buscarDatos(null, "rnumeroempleado = " . $rnumeroEmpleado)) {
-            $eliminarViaje = readline("Quiere eliminar el viaje junto al responsable? (si/no) ");
+            $eliminarViaje = readline("Tiene un viaje. Quiere eliminar el viaje junto al responsable? (si/no) ");
             if ($eliminarViaje == "si") {
                 $viaje->eliminarDatos();
                 $viajeE = false;
@@ -386,7 +399,7 @@ function responsableEliminar()
                 echo "\nNo se pudo eliminar el responsable.\n";
             }
         } else {
-            echo "\nNo se puede eliminar un responsable a cargo de un viaje sin eliminar el viaje.\n";
+            echo "\nNo se puede eliminar un responsable tiene un viaje a cargo.\n";
         }
     } else {
         echo "No se pudo encontrar el responsable con numero de empleado: " . $rnumeroEmpleado . ".\n";
@@ -428,13 +441,13 @@ function pasajeroIngresar()
 {
     $pasajero = new Pasajero();
     $viaje = new Viaje();
-    $dni = readline("Documento de pasajero: ");
+    $dni = readline("DNI de pasajero: ");
     $nombre = readline("Nombre: ");
     $apellido = readline("Apellido: ");
     $telefono = readline("Telefono: ");
     $idviaje = readline("Id del viaje: ");
     if ($viaje->buscarDatos($idviaje, null)) {
-        if (!$pasajero->buscarDatos($dni)) {
+        if (!$pasajero->buscarDatos($dni, null)) {
             $pasajero->cargarDatos($nombre, $apellido, $dni, $telefono, $viaje);
             $resultado = $pasajero->insertarDatos();
             if ($resultado == true) {
@@ -445,7 +458,7 @@ function pasajeroIngresar()
                 echo $pasajero->getMensajeDeOperacion();
             }
         } else {
-            echo "\nYa existe un pasajero con ese documento.\n";
+            echo "\nYa existe un pasajero con ese DNI.\n";
         }
     } else {
         echo "El viaje no existe.\n";
@@ -457,45 +470,37 @@ function pasajeroModificar()
 {
     $pasajero = new Pasajero();
     $viaje = new Viaje();
-    $dni = readline("Ingrese el documento del pasajero: ");
+    $dni = readline("Ingrese el DNI del pasajero: ");
     if (is_numeric($dni)) {
-        $resultado = $pasajero->buscarDatos($dni);
+        $resultado = $pasajero->buscarDatos($dni, null);
         if ($resultado) {
             echo "Datos Nuevos\n";
-            $nuevodni = readline("Documento de pasajero: ");
+            $nuevodni = readline("DNI de pasajero: ");
             $nombre = readline("Nombre: ");
             $apellido = readline("Apellido: ");
             $telefono = readline("Telefono: ");
             $idviaje = readline("Id del viaje: ");
             if ($viaje->buscarDatos($idviaje, null)) {
-                if ($nuevodni != null) {
-                    if (!$pasajero->buscarDatos($nuevodni)) {
-                        $pasajero->cargarDatos($nombre, $apellido, $nuevodni, $telefono, $viaje);
-                    } else {
-                        echo "Ya existe un pasajero con ese documento.\n";
-                    }
-                } else {
                     $pasajero->setPnombre($nombre);
                     $pasajero->setPapellido($apellido);
                     $pasajero->setPtelefono($telefono);
                     $pasajero->setIdviaje($viaje);
-                }
-                $resultado = $pasajero->modificarDatos($dni);
+                $resultado = $pasajero->modificarDatos(null);
                 if ($resultado) {
                     echo "\t----------------------------------------------------------------\n";
                     echo "\n\t   El pasajero fue modificado correctamente a la Base de Datos.\n" .
                         "\t-----------------------------------------------------------------\n";
                 } else {
-                    echo "\nNo se pudo modificar el pasajero.\n";
+                    echo "\nNo se pudo modificar.\n";
                 }
             } else {
-                echo "\nNo se pudo modificar el pasajero.\n";
+                echo "\nNo se pudo modificar. Porque el viaje no existe.\n";
             }
         } else {
             echo "No se pudo encontrar el pasajero de documento: " . $dni . ".\n";
         }
     } else {
-        echo "El documento ingresado es incorrecto.\n";
+        echo "El DNI ingresado no existe.\n";
     }
 }
 
@@ -505,7 +510,7 @@ function pasajeroEliminar()
     $pasajero = new Pasajero();
     $dni = readline("Ingrese el documento del pasajero: ");
     if (is_numeric($dni)) {
-        $resultado = $pasajero->buscarDatos($dni);
+        $resultado = $pasajero->buscarDatos($dni, null);
         if ($resultado) {
             $resultado = $pasajero->eliminarDatos();
             if ($resultado) {
@@ -513,13 +518,13 @@ function pasajeroEliminar()
                 echo "\n\t   El pasajero fue eliminado correctamente a la Base de Datos..\n" .
                 "\t-----------------------------------------------------------------\n";
             } else {
-                echo "\nNo se pudo eliminar el pasajero.\n";
+                echo "\nNo se pudo eliminar.\n";
             }
         } else {
-            echo "No se pudo encontrar el pasajero el documento: " . $dni . ".\n";
+            echo "No se pudo encontrar el pasajero el DNI: " . $dni . ".\n";
         }
     } else {
-        echo "El documento ingresado no es valido.\n";
+        echo "El DNI ingresado no existe.\n";
     }
 }
 
@@ -536,16 +541,16 @@ function pasajeroMostrar()
             echo "---------------------------------";
         }
     } else {
-        $doc = readline("Ingrese documento del pasajero: ");
+        $doc = readline("Ingrese DNI del pasajero: ");
         if (is_numeric($doc)) {
-            $respuesta = $pasajero->buscarDatos($doc);
+            $respuesta = $pasajero->buscarDatos($doc, null);
             if ($respuesta) {
                 echo $pasajero;
             } else {
-                echo "No se pudo encontrar el pasajero.";
+                echo "El pasajero no existe.";
             }
         } else {
-            echo "El documetno ingresado no es valido.\n";
+            echo "El DNI ingresado no existe.\n";
         }
     }
 }
@@ -628,3 +633,5 @@ $res = true;
 while ($res) {
     $res = opcionesMenu();
 }
+
+echo "Vacaciones. xD";

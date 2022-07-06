@@ -107,14 +107,17 @@ class pasajero
     }
 
     //Buscar Datos
-    public function buscarDatos($dni)
+    public function buscarDatos($dni, $factor)
     {
         $baseD = new BaseDatos();
         $viaje = new Viaje();
         $resultado = false;
-        $consultaPasajero = "SELECT * FROM pasajero WHERE rdocumento = " . $dni;
-        
-
+        $consultaPasajero = "SELECT * FROM pasajero WHERE ";
+        if ($factor == null) {
+            $consultaPasajero .= 'rdocumento = ' . $dni;
+        } else {
+            $consultaPasajero .= $factor;
+        }
         if ($baseD->conectar()) {
             if ($baseD->ejecutarConsulta($consultaPasajero)) {
                 if ($aux = $baseD->registroConsulta()) {
@@ -140,7 +143,7 @@ class pasajero
     {
         $coleccionPasajero = null;
         $baseD = new BaseDatos();
-        $consultaPasajero = "SELECT * FROM pasajero WHERE " . $factor . ";";
+        $consultaPasajero = "SELECT * FROM pasajero" . $factor . ";";
         if ($baseD->conectar()) {
             if ($baseD->ejecutarConsulta($consultaPasajero)) {
                 $coleccionPasajero = array();
@@ -189,29 +192,18 @@ class pasajero
     }
 
     //Modificar Datos
-    public function modificarDatos($dni = "", $factor = "")
+    public function modificarDatos($factor)
     {
         $baseD = new BaseDatos();
         $resultado = false;
-        if ($dni == null) {
             $consulModificar = "UPDATE pasajero 
             SET pnombre = '" . $this->getPnombre() .
                 "', papellido = '" . $this->getPapellido() .
                 "', ptelefono = '" . $this->getPtelefono() .
                 "' WHERE rdocumento = " . $this->getRdocumento();
-        } else {
-            $consulModificar = "UPDATE pasajero 
-            SET rdocumento = " .  $this->getRdocumento() .
-                ", pnombre = '" . $this->getPnombre() .
-                "', papellido = '" . $this->getPapellido() .
-                "', ptelefono = '" . $this->getPtelefono() .
-                "' WHERE rdocumento = " . $dni;
-        }
-
         if ($factor != null) {
             $consulModificar = $factor;
         }
-
         if ($baseD->conectar()) {
             if ($baseD->ejecutarConsulta($consulModificar)) {
                 $resultado =  true;
