@@ -6,6 +6,7 @@ class ResponsableV
     private $rlicencia;
     private $rnombre;
     private $rapellido;
+    private $mensajeDeOperacion;
 
     //Construct
     public function __construct()
@@ -16,212 +17,212 @@ class ResponsableV
         $this->rapellido =  "";
     }
 
-     
- 
-     // Getters
-     public function getNumeroEmpleado()
-     {
-         return $this->rnumeroEmpleado;
-     }
- 
-     public function getLicencia()
-     {
-         return $this->rlicencia;
-     }
-     public function getNombre()
-     {
-         return $this->rnombre;
-     }
- 
-     public function getApellido()
-     {
-         return $this->rapellido;
-     }
- 
-     public function getMensajeOperacion()
-     {
-         return $this->mensajeOperacion;
-     }
 
-     // Setters
-     public function setNumeroEmpleado($rnumeroEmpleado)
-     {
-         return $this->rnumeroEmpleado = $rnumeroEmpleado;
-     }
- 
-     public function setLicencia($rlicencia)
-     {
-         return $this->rlicencia = $rlicencia;
-     }
- 
-     public function setNombre($rnombre)
-     {
-         return $this->rnombre = $rnombre;
-     }
- 
-     public function setApellido($rapellido)
-     {
-         return $this->rapellido = $rapellido;
-     }
- 
-     public function setMensajeOperacion($mensajeOperacion)
-     {
-         $this->mensajeOperacion = $mensajeOperacion;
-     }
+
+    // Getters
+    public function getRnumeroEmpleado()
+    {
+        return $this->rnumeroEmpleado;
+    }
+
+    public function getRlicencia()
+    {
+        return $this->rlicencia;
+    }
+
+    public function getRnombre()
+    {
+        return $this->rnombre;
+    }
+
+    public function getRapellido()
+    {
+        return $this->rapellido;
+    }
+
+    public function getMensajeDeOperacion()
+    {
+        return $this->mensajeDeOperacion;
+    }
+
+    // Setters
+    public function setRnumeroEmpleado($rnumeroEmpleado)
+    {
+        $this->rnumeroEmpleado = $rnumeroEmpleado;
+
+        return $this;
+    }
+
+    public function setRlicencia($rlicencia)
+    {
+        $this->rlicencia = $rlicencia;
+
+        return $this;
+    }
+
+    public function setRnombre($rnombre)
+    {
+        $this->rnombre = $rnombre;
+
+        return $this;
+    }
+
+    public function setRapellido($rapellido)
+    {
+        $this->rapellido = $rapellido;
+
+        return $this;
+    }
+
+    public function setMensajeDeOperacion($mensajeDeOperacion)
+    {
+        $this->mensajeDeOperacion = $mensajeDeOperacion;
+
+        return $this;
+    }
 
     //Funciones Magicas
-    public function cargarDatos($numEmpleado, $numlicencia, $nombreResponsable, $apellidoResponsable)
+    //Cargar Datos
+    public function cargarDatos($rnumeroEmpleado, $rlicencia, $rnombre, $rapellido)
     {
-        $this->rnumeroEmpleado = $numEmpleado;
-        $this->rlicencia = $numlicencia;
-        $this->rnombre = $nombreResponsable;
-        $this->rapellido = $apellidoResponsable;
+        $this->rnumeroEmpleado = $rnumeroEmpleado;
+        $this->rlicencia = $rlicencia;
+        $this->rnombre = $rnombre;
+        $this->rapellido = $rapellido;
     }
 
-    //BUSCAR RESPONSABLE
-    //POR NUMERO DE EMPLEADO
-    public function buscarDatos($numEmpleado)
+    //Buscar Datos
+    public function buscarDatos($rnumeroEmpleado)
     {
         $baseD = new BaseDatos();
-        $consultaR = "SELECT * FROM responsable WHERE rnumeroempleado = " . $numEmpleado;
-        $resp = false;
-
+        $resultado = false;
+        $consultaResponsable = "SELECT * FROM responsable WHERE rnumeroempleado = " . $rnumeroEmpleado;
         if ($baseD->conectar()) {
-            if ($baseD->ejecutarConsulta($consultaR)) {
+            if ($baseD->ejecutarConsulta($consultaResponsable)) {
                 if ($aux = $baseD->registroConsulta()) {
-                    $this->setNumeroEmpleado($numEmpleado);
-                    $this->setNombre($aux['rnombre']);
-                    $this->setApellido($aux['rapellido']);
-                    $this->setLicencia($aux['rnumerolicencia']);
-                    $resp = true;
+                    $this->setRnumeroEmpleado($rnumeroEmpleado);
+                    $this->setRnombre($aux['rnombre']);
+                    $this->setRapellido($aux['rapellido']);
+                    $this->setRlicencia($aux['rnumerolicencia']);
+                    $resultado = true;
                 }
             } else {
-                $this->setMensajeOperacion($baseD->getError());
+                $this->setMensajeDeOperacion($baseD->getError());
             }
         } else {
-            $this->setMensajeOperacion($baseD->getError());
+            $this->setMensajeDeOperacion($baseD->getError());
         }
-        return $resp;
+        return $resultado;
     }
 
-    //COLECCION DE RESPONSABLES
-    public function lista($condic = "")
+    //Coleccion De Responsable
+    public function lista($factor = "")
     {
-        $arrResponsables = null;
         $baseD = new BaseDatos();
-        $consultaP = "SELECT * FROM responsable ";
-        if ($condic != "") {
-            $consultaP = $consultaP . ' where ' . $condic;
+        $coleccionResponsable = null;
+        $consultaResponsable = "SELECT * FROM responsable ";
+        if ($factor != "") {
+            $consultaResponsable = $consultaResponsable . ' where ' . $factor;
         }
-        $consultaP .= " order by rnumeroempleado ";
+        $consultaResponsable .= " order by rnumeroempleado ";
         if ($baseD->conectar()) {
-            if ($baseD->ejecutarConsulta($consultaP)) {
-                $arrResponsables = array();
-                while ($row2 = $baseD->registroConsulta()) {
-
-                    $numEmpleado = $row2['rnumeroempleado'];
-                    $nombre = $row2['rnombre'];
-                    $apellido = $row2['rapellido'];
-                    $numLicencia = $row2['rnumerolicencia'];
-
+            if ($baseD->ejecutarConsulta($consultaResponsable)) {
+                $coleccionResponsable = array();
+                while ($aux = $baseD->registroConsulta()) {
+                    $numEmpleado = $aux['rnumeroempleado'];
+                    $nombre = $aux['rnombre'];
+                    $apellido = $aux['rapellido'];
+                    $numLicencia = $aux['rnumerolicencia'];
                     $responsable = new ResponsableV();
                     $responsable->cargarDatos($numEmpleado, $numLicencia, $nombre, $apellido);
-                    array_push($arrResponsables, $responsable);
+                    array_push($coleccionResponsable, $responsable);
                 }
             } else {
-                $this->setMensajeOperacion($baseD->getError());
+                $this->setMensajeDeOperacion($baseD->getError());
             }
         } else {
-            $this->setMensajeOperacion($baseD->getError());
+            $this->setMensajeDeOperacion($baseD->getError());
         }
-        return $arrResponsables;
+        return $coleccionResponsable;
     }
 
-    //INGRESAR RESPONSABLE
+    //Insertar Datos
     public function insertarDatos()
     {
         $baseD = new BaseDatos();
-        $resp = false;
-        if ($this->getNumeroEmpleado() == null) {
-            $queryInsertar = "INSERT INTO responsable(rnumerolicencia, rnombre, rapellido) 
-                    VALUES (" . $this->getLicencia() . ",'" .
-                $this->getNombre() . "','" .
-                $this->getApellido() . "')";
+        $resultado = false;
+        if ($this->getRnumeroEmpleado() == null) {
+            $consultaResponsable = "INSERT INTO responsable(rnumerolicencia, rnombre, rapellido) 
+                    VALUES (" . $this->getRlicencia() . ",'" .
+                $this->getRnombre() . "','" .
+                $this->getRapellido() . "')";
         } else {
-            $queryInsertar = "INSERT INTO responsable(rnumeroempleado, rnumerolicencia, rnombre, rapellido) 
-                    VALUES (" . $this->getNumeroEmpleado() . ",'" .
-                $this->getLicencia() . "','" .
-                $this->getNombre() . "','" .
-                $this->getApellido() . "')";
+            $consultaResponsable = "INSERT INTO responsable(rnumeroempleado, rnumerolicencia, rnombre, rapellido) 
+                    VALUES (" . $this->getRnumeroEmpleado() . ",'" .
+                $this->getRlicencia() . "','" .
+                $this->getRnombre() . "','" .
+                $this->getRapellido() . "')";
         }
         if ($baseD->conectar()) {
-            if ($baseD->ejecutarConsulta($queryInsertar)) {
-                $resp = true;
+            if ($baseD->ejecutarConsulta($consultaResponsable)) {
+                $resultado = true;
             } else {
-                $this->setMensajeOperacion($baseD->getError());
+                $this->setMensajeDeOperacion($baseD->getError());
             }
         } else {
-            $this->setMensajeOperacion($baseD->getError());
+            $this->setMensajeDeOperacion($baseD->getError());
         }
-        return $resp;
+        return $resultado;
     }
 
 
-    //MODIFICAR RESPONSABLE
-    public function modificarDatos($idViejo = "")
+    //Modificar Datos
+    public function modificarDatos()
     {
-        $resp = false;
         $baseD = new BaseDatos();
-        if ($idViejo == null) {
-            $queryModifica = "UPDATE responsable 
-            SET rnombre = '" . $this->getNombre() .
-                "', rapellido = '" . $this->getApellido() .
-                "', rnumerolicencia = '" . $this->getLicencia() .
-                "' WHERE rnumeroempleado = " . $this->getNumeroEmpleado();
-        } else {
-            $queryModifica = "UPDATE responsable 
-            SET rnumeroempleado = " . $this->getNumeroEmpleado() .
-                ", rnombre = '" . $this->getNombre() .
-                "', rapellido = '" . $this->getApellido() .
-                "', rnumerolicencia = '" . $this->getLicencia() .
-                "' WHERE rnumeroempleado = " . $idViejo;
-        }
+        $resultado = false;
+        $consulModificar = "UPDATE responsable 
+            SET rnombre = '" . $this->getRnombre() .
+            "', rapellido = '" . $this->getRapellido() .
+            "', rnumerolicencia = '" . $this->getRlicencia() .
+            "' WHERE rnumeroempleado = " . $this->getRnumeroEmpleado();
+
         if ($baseD->conectar()) {
-            if ($baseD->ejecutarConsulta($queryModifica)) {
-                $resp =  true;
+            if ($baseD->ejecutarConsulta($consulModificar)) {
+                $resultado =  true;
             } else {
-                $this->setMensajeOperacion($baseD->getError());
+                $this->setMensajeDeOperacion($baseD->getError());
             }
         } else {
-            $this->setMensajeOperacion($baseD->getError());
+            $this->setMensajeDeOperacion($baseD->getError());
         }
-        return $resp;
+        return $resultado;
     }
 
-    //ELIMINAR RESPONSABLE
+    //Eliminar Datos
     public function eliminarDatos()
     {
         $baseD = new BaseDatos();
-        $resp = false;
+        $resultado = false;
         if ($baseD->conectar()) {
-            $queryBorrar = "DELETE FROM responsable WHERE rnumeroempleado = " . $this->getNumeroEmpleado();
-            if ($baseD->ejecutarConsulta($queryBorrar)) {
+            $consultaBorrar = "DELETE FROM responsable WHERE rnumeroempleado = " . $this->getRnumeroEmpleado();
+            if ($baseD->ejecutarConsulta($consultaBorrar)) {
                 $resp =  true;
             } else {
-                $this->setMensajeOperacion($baseD->getError());
+                $this->setMensajeDeOperacion($baseD->getError());
             }
         } else {
-            $this->setMensajeOperacion($baseD->getError());
+            $this->setMensajeDeOperacion($baseD->getError());
         }
-        return $resp;
+        return $resultado;
     }
 
-    //TOSTRING
+    //ToString
     public function __toString()
     {
-        return "\n\tNumero Empleado: " . $this->getNumeroEmpleado() .
-            "\n\tNumero Licencia: " . $this->getlicencia() .
-            "\n\tNombre: " . $this->getNombre() .
-            "\n\tApellido: " . $this->getApellido() . "\n";
+        return "\n\tNumero Empleado: " . $this->getRnumeroEmpleado() .
+            "\n\tNumero Licencia: " . $this->getRlicencia() .
+            "\n\tNombre: " . $this->getRnombre() .
+            "\n\tApellido: " . $this->getRapellido() . "\n";
     }
 }

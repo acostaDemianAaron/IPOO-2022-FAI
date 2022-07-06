@@ -4,7 +4,7 @@ class Empresa
     private $idempresa;
     private $enombre;
     private $edireccion;
-    private $mensajeOperacion;
+    private $mensajeDeOperacion;
 
     //Construct
     public function __construct()
@@ -31,175 +31,171 @@ class Empresa
         return $this->edireccion;
     }
 
-
-    public function getMensajeOperacion()
+    public function getMensajeDeOperacion()
     {
-        return $this->mensajeOperacion;
+        return $this->mensajeDeOperacion;
     }
 
     //Setter
-    public function setIdempresa($nuevoId)
+    public function setIdempresa($idempresa)
     {
-        $this->idempresa = $nuevoId;
+        $this->idempresa = $idempresa;
+
+        return $this;
     }
 
-    public function setEnombre($nuevoNom)
+    public function setEnombre($enombre)
     {
-        $this->enombre = $nuevoNom;
+        $this->enombre = $enombre;
+
+        return $this;
     }
 
-    public function setEdireccion($nuevaDir)
+    public function setEdireccion($edireccion)
     {
-        $this->edireccion = $nuevaDir;
+        $this->edireccion = $edireccion;
+
+        return $this;
     }
 
-
-    public function setMensajeOperacion($mensajeOperacion)
+    public function setMensajeDeOperacion($mensajeDeOperacion)
     {
-        $this->mensajeOperacion = $mensajeOperacion;
+        $this->mensajeDeOperacion = $mensajeDeOperacion;
+
+        return $this;
     }
 
     //Funciones Magicas
-    public function cargarDatos($idE, $nomE, $dirE)
+    //Cargar Datos
+    public function cargarDatos($idempresa, $enombre, $edireccion)
     {
-        $this->setIdempresa($idE);
-        $this->setEnombre($nomE);
-        $this->setEdireccion($dirE);
+        $this->setIdempresa($idempresa);
+        $this->setEnombre($enombre);
+        $this->setEdireccion($edireccion);
     }
 
-    //BUSCAR DATOS EMPRESA
-    //SEGUN IDENTIFICADOR
-    public function buscarDatos($id)
+    //Buscar Datos
+    public function buscarDatos($idempresa)
     {
         $baseD = new BaseDatos();
-        $consultaEmpresa = "SELECT * FROM empresa WHERE idempresa = " . $id;
-        $resp = false;
-
+        $resultado = false;
+        $consultaIdEmpresa = "SELECT * FROM empresa WHERE idempresa = " . $idempresa;
         if ($baseD->conectar()) {
-            if ($baseD->ejecutarConsulta($consultaEmpresa)) {
+            if ($baseD->ejecutarConsulta($consultaIdEmpresa)) {
                 if ($aux = $baseD->registroConsulta()) {
-                    $this->setIdempresa($id);
+                    $this->setIdempresa($idempresa);
                     $this->setEnombre($aux['enombre']);
                     $this->setEdireccion($aux['edireccion']);
-                    $resp = true;
+                    $resultado = true;
                 }
             } else {
-                $this->setMensajeOperacion($baseD->getError());
+                $this->setMensajeDeOperacion($baseD->getError());
             }
         } else {
-            $this->setMensajeOperacion($baseD->getError());
+            $this->setMensajeDeOperacion($baseD->getError());
         }
-        return $resp;
+        return $resultado;
     }
 
 
-    //COLECCION DE EMPRESAS
-    public function lista($condic = "")
+    //Coleccion De Empresas
+    public function lista($factor = "")
     {
-        $arrEmpresa = null;
         $baseD = new BaseDatos();
-        $consultaE = "SELECT * FROM empresa ";
-        if ($condic != "") {
-            $consultaE = $consultaE . ' where ' . $condic;
+        $coleccionEmpresa = null;
+        $consultaEmpresa = "SELECT * FROM empresa ";
+        if ($factor != "") {
+            $consultaEmpresa = $consultaEmpresa . ' where ' . $factor;
         }
-        $consultaE .= " order by idempresa ";
+        $consultaEmpresa .= " order by idempresa ";
         if ($baseD->conectar()) {
-            if ($baseD->ejecutarConsulta($consultaE)) {
-                $arrEmpresa = array();
+            if ($baseD->ejecutarConsulta($consultaEmpresa)) {
+                $coleccionEmpresa = array();
                 while ($aux = $baseD->registroConsulta()) {
-
                     $idempresa = $aux['idempresa'];
                     $enombre = $aux['enombre'];
                     $edireccion = $aux['edireccion'];
-
                     $empresa = new Empresa();
                     $empresa->cargarDatos($idempresa, $enombre, $edireccion);
-                    array_push($arrEmpresa, $empresa);
+                    array_push($coleccionEmpresa, $empresa);
                 }
             } else {
-                $this->setMensajeOperacion($baseD->getError());
+                $this->setMensajeDeOperacion($baseD->getError());
             }
         } else {
-            $this->setMensajeOperacion($baseD->getError());
+            $this->setMensajeDeOperacion($baseD->getError());
         }
-        return $arrEmpresa;
+        return $coleccionEmpresa;
     }
 
-    //INGRESAR DATOS DE EMPRESA
+    //Insertar Datos
     public function insertarDatos()
     {
         $baseD = new BaseDatos();
-        $resp = false;
+        $resultado = false;
         if ($this->getIdempresa() == null) {
-            $queryInsertar = "INSERT INTO empresa(enombre, edireccion) 
+            $consultaEmpresa = "INSERT INTO empresa(enombre, edireccion) 
                     VALUES ('" . $this->getEnombre() . "','" . $this->getEdireccion() . "')";
         } else {
-            $queryInsertar = "INSERT INTO empresa(idempresa, enombre, edireccion) 
+            $consultaEmpresa = "INSERT INTO empresa(idempresa, enombre, edireccion) 
                     VALUES (" . $this->getIdempresa() . ",'" . $this->getEnombre() . "','" . $this->getEdireccion() . "')";
         }
         if ($baseD->conectar()) {
-            if ($baseD->ejecutarConsulta($queryInsertar)) {
-                $resp = true;
+            if ($baseD->ejecutarConsulta($consultaEmpresa)) {
+                $resultado = true;
             } else {
-                $this->setMensajeOperacion($baseD->getError());
+                $this->setMensajeDeOperacion($baseD->getError());
             }
         } else {
-            $this->setMensajeOperacion($baseD->getError());
+            $this->setMensajeDeOperacion($baseD->getError());
         }
-        return $resp;
+        return $resultado;
     }
 
-    //MODIFICAR DATOS DE EMPRESA
-    public function modificarDatos($idViejo = "")
+    //Modificar Datos
+    public function modificarDatos()
     {
-        $resp = false;
         $baseD = new BaseDatos();
-        if ($idViejo == null) {
-            $queryModifica = "UPDATE empresa 
+        $resultado = false;
+        $consultaModifica = "UPDATE empresa 
             SET enombre = '" . $this->getEnombre() .
-                "', edireccion = '" . $this->getEdireccion() .
-                "' WHERE idempresa = " . $this->getIdempresa();
-        } else {
-            $queryModifica = "UPDATE empresa 
-            SET idempresa = " . $this->getIdempresa() .
-                ", enombre = '" . $this->getEnombre() .
-                "', edireccion = '" . $this->getEdireccion() .
-                "' WHERE idempresa = " . $idViejo;
-        }
+            "', edireccion = '" . $this->getEdireccion() .
+            "' WHERE idempresa = " . $this->getIdempresa();
+
         if ($baseD->conectar()) {
-            if ($baseD->ejecutarConsulta($queryModifica)) {
-                $resp =  true;
+            if ($baseD->ejecutarConsulta($consultaModifica)) {
+                $resultado =  true;
             } else {
-                $this->setMensajeOperacion($baseD->getError());
+                $this->setMensajeDeOperacion($baseD->getError());
             }
         } else {
-            $this->setMensajeOperacion($baseD->getError());
+            $this->setMensajeDeOperacion($baseD->getError());
         }
-        return $resp;
+        return $resultado;
     }
 
-    //ELIMINAR DATOS DE EMPRESA
+    //Eliminar Datos
     public function eliminarDatos()
     {
         $baseD = new BaseDatos();
-        $resp = false;
+        $resultado = false;
         if ($baseD->conectar()) {
-            $queryBorrar = "DELETE FROM empresa WHERE idempresa=" . $this->getIdempresa();
-            if ($baseD->ejecutarConsulta($queryBorrar)) {
-                $resp =  true;
+            $consultaBorrar = "DELETE FROM empresa WHERE idempresa=" . $this->getIdempresa();
+            if ($baseD->ejecutarConsulta($consultaBorrar)) {
+                $resultado =  true;
             } else {
-                $this->setMensajeOperacion($baseD->getError());
+                $this->setMensajeDeOperacion($baseD->getError());
             }
         } else {
-            $this->setMensajeOperacion($baseD->getError());
+            $this->setMensajeDeOperacion($baseD->getError());
         }
-        return $resp;
+        return $resultado;
     }
 
-    //TOSTRING
+    //ToString
     public function __toString()
     {
-        return "\nId Empresa: " . $this->getIdempresa() .
+        return "\nEmpresa: " . $this->getIdempresa() .
             "\nNombre: " . $this->getEnombre() .
             "\nDireccion: " . $this->getEdireccion() . "\n";
     }
